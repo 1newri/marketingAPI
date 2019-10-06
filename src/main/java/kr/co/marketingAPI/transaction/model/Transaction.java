@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-//@IdClass(TransactionId.class)
 @Table(name = "transaction")
 public class Transaction {
 
