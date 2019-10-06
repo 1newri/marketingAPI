@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import kr.co.marketingAPI.advice.exception.CUserNotFoundException;
+import kr.co.marketingAPI.advice.exception.CBrCodeNotFoundException;
 import kr.co.marketingAPI.model.response.CommonResult;
 import kr.co.marketingAPI.model.response.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +27,11 @@ public class ExceptionAdvice {
 	protected CommonResult defaultException(HttpServletRequest request, Exception e) {
 		return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.msg"));
 	}
-
-	@ExceptionHandler(CUserNotFoundException.class)
+	
+	@ExceptionHandler(CBrCodeNotFoundException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	protected CommonResult userNotFoundException(HttpServletRequest request, CUserNotFoundException e) {
-		return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
+	protected CommonResult brCodeNotFoundException(HttpServletRequest request, CBrCodeNotFoundException e) {
+		return responseService.getFailResult(Integer.valueOf(getMessage("notFound.code")), getMessage("notFound.msg"));
 	}
 
 	private String getMessage(String code) {

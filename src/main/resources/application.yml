@@ -13,6 +13,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    generate-ddl: true
   messages:
     basename: i18n/exception
     encoding: UTF-8
+  redis:
+    host: localhost
+    port: 6379
+
+#mybatis 설정
+mybatis:  mapper-locations: mappers/**/*.xml  configuration:    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: false
+

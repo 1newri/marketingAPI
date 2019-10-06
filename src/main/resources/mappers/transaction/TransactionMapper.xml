@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.marketingAPI.transaction.mapper.TransactionMapper">
+
+	<resultMap type="kr.co.marketingAPI.transaction.model.Result01" id="result01"></resultMap>
+	<resultMap type="kr.co.marketingAPI.transaction.model.Result02" id="result02"></resultMap>
+	<resultMap type="kr.co.marketingAPI.transaction.model.Result03" id="result03"></resultMap>
+	<resultMap type="kr.co.marketingAPI.transaction.model.Result04" id="result04"></resultMap>
+
+	<select id="getYearSumAmtManyCustomList" resultMap="result01">
+		SELECT
+			YEAR
+		    , AC.ACCT_NAME as NAME
+		    , AC.ACCT_NO
+		    , T1.SUMAMT
+		FROM(
+			SELECT
+				ACCT_NO
+				, YEAR
+				, SUMAMT
+				, ROW_NUMBER() OVER(PARTITION BY YEAR ORDER BY SUMAMT DESC) as ROWIDX
+			FROM(
+			    SELECT 
+					ACCT_NO
+					, LEFT(TRNSCT_DATE,4) as YEAR
+					, SUM(AMT - COMMISSION) as SUMAMT
+				fROM TRANSACTION T 
+				WHERE CANCLE_YN = 'N'
+				GROUP BY ACCT_NO, LEFT(TRNSCT_DATE,4)
+			) 
+		) T1, ACCOUNT AC
+		WHERE ROWIDX = 1
+		AND T1.ACCT_NO = AC.ACCT_NO
+		ORDER BY YEAR
+	</select>
+	
+	<select id="getYearNoTransactionCustomList" resultMap="result02">
+		SELECT
+			'2018' as YEAR
+			, ACCT.ACCT_NAME as NAME
+			, ACCT.ACCT_NO
+		FROM ACCOUNT ACCT
+		LEFT OUTER JOIN (
+			SELECT
+				ACCT_NO
+				, LEFT(TRNSCT_DATE,4) as YEAR
+		  	fROM TRANSACTION  
+			WHERE LEFT(TRNSCT_DATE,4) = '2018'
+		  	GROUP BY ACCT_NO, LEFT(TRNSCT_DATE,4)
+			ORDER BY YEAR
+		)T
+		ON ACCT.ACCT_NO = T.ACCT_NO
+		WHERE T.ACCT_NO IS NULL
+		UNION ALL
+		SELECT
+			'2019' as YEAR
+			, ACCT.ACCT_NAME
+			, ACCT.ACCT_NO
+		FROM ACCOUNT ACCT
+		LEFT OUTER JOIN (
+			SELECT
+				ACCT_NO
+				, LEFT(TRNSCT_DATE,4) as YEAR
+		  	fROM TRANSACTION  
+			WHERE LEFT(TRNSCT_DATE,4) = '2019'
+		  	GROUP BY ACCT_NO, LEFT(TRNSCT_DATE,4)
+			ORDER BY YEAR
+		)T
+		ON ACCT.ACCT_NO = T.ACCT_NO
+		WHERE T.ACCT_NO IS NULL
+	</select>
+	
+	<select id="getYearBranchSumAmtList" resultMap="result03">
+		SELECT
+			LEFT(TRNSCT_DATE,4) as YEAR
+			, BR.BR_NAME
+			, BR.BR_CODE
+			, SUM(AMT-COMMISSION) as SUMAMT
+		FROM TRANSACTION T
+		LEFT JOIN ACCOUNT ACCT
+			ON T.ACCT_NO = ACCT.ACCT_NO
+		LEFT JOIN BRANCH BR
+			ON ACCT.BR_CODE = BR.BR_CODE
+		WHERE CANCLE_YN = 'N'
+		GROUP BY LEFT(TRNSCT_DATE,4), BR.BR_CODE, BR.BR_NAME
+		ORDER BY YEAR, SUMAMT DESC
+	</select>
+	
+	<select id="branchSumAmtBybranchName" parameterType="String" resultMap="result04">
+		SELECT
+			 BR.BR_NAME
+			, BR.BR_CODE
+			, SUM(AMT-COMMISSION) as SUMAMT
+		FROM TRANSACTION T
+		LEFT JOIN ACCOUNT ACCT
+			ON T.ACCT_NO = ACCT.ACCT_NO
+		LEFT JOIN BRANCH BR
+			ON ACCT.BR_CODE = BR.BR_CODE
+		WHERE BR.BR_NAME LIKE '%' || #{brName} || '%'
+		AND CANCLE_YN = 'N'
+		GROUP BY BR.BR_NAME, BR.BR_CODE
+	</select>
+	
+</mapper>

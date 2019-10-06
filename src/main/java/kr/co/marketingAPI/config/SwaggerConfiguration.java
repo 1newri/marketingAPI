@@ -25,10 +25,10 @@ public class SwaggerConfiguration {
 	}
 
 	private ApiInfo swaggerInfo() {
-		return new ApiInfoBuilder().title("Spring API Documentation")
-				.description("앱 개발시 사용되는 서버 API에 대한 연동 문서입니다.")
-				.license("nuri")
-				.licenseUrl("http://localhost:7777/v2/api-docs")
+		return new ApiInfoBuilder().title("Branch Marketing API Documnetaion")
+				.description("고객을 타겟팅 하기 위한 지점 마케팅 API에 대한 연동 문서입니다.")
+				.license("Han Nuri")
+				.licenseUrl("http://localhost:7777/api-docs")
 				.version("1")
 				.build();
 	}
