@@ -10,13 +10,13 @@
 
 ## 빌드 및 실행방법
 
- 1. Relase 된 jar파일을 다운로드한다.
+ 1. Release 된 jar파일을 다운로드한다.
  2. cmd를 열어 다운로드된 위치로 이동하여 아래 명령어를 입력하여 서비스를 실행한다.
    ```shell
    java -jar [다운로드된 jar파일명]
    ex) java -jar marketingAPI-0.0.1-SNAPSHOT.jar
    ```
- 3. http://localhost:7777/swagger-ui.html url로 접속한다.
+ 3. 서비스가 정상적으로 실행되면 http://localhost:7777/swagger-ui.html url로 접속한다.
  4. 호출된 화면에서 Branch Marketing API Documnetaion 를 클릭하면 개의 api 호출 서비스가 나타난다.
  5. /api/1 서비스를 클릭하고 Try it out! 버튼을 클릭하면 해당 서비스가 호출되며 결과값을 확인할 수 있다.
  6. /api/2 서비스를 클릭하고 Try it out! 버튼을 클릭하면 해당 서비스가 호출되며 결과값을 확인할 수 있다.
